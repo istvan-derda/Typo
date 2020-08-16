@@ -1,0 +1,21 @@
+.ty-typing-interface {
+  display: grid;
+  grid-template-columns: 1fr 1em 1fr;
+
+  .ty-typed-text {
+    text-align: right;
+  }
+
+  .ty-target-text {
+    text-align: left;
+  }
+
+  .ty-typing-input {
+    grid-column: 2 / 4;
+
+    width: 1fr;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+}
