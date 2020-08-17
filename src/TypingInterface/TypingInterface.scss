@@ -1,9 +1,14 @@
 .ty-typing-interface {
   width: 70vw;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  border-radius: 1em;
 
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: repeat(2, 4em);
+  grid-template-rows: repeat(2, 3em);
+  align-items: center;
 
   font-family: monospace;
   font-size: 1.2em;
