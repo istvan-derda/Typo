@@ -3,8 +3,8 @@ import "./TypingInterface.scss";
 import React, {useEffect, useState} from "react";
 
 const TypingInterface = () => {
-    const [targetText, setTargetText] = useState("isztelt hölgyeim és uraim!");
-    const [nextChar, setNextChar] = useState("T")
+    const [targetText, setTargetText] = useState("elcome to Typo, a typing-trainer where you decide, what you want to type!");
+    const [nextChar, setNextChar] = useState("W")
     const [typedText, setTypedText] = useState("");
     const [inputText, setInputText] = useState("");
 
@@ -19,10 +19,18 @@ const TypingInterface = () => {
 
     return (
         <div className={"ty-typing-interface"}>
-            <pre className={"ty-typed-text"}>{typedText}</pre>
-            <pre className={"ty-next-char"}><b><u>{nextChar === " " ? "_" : nextChar}</u></b></pre>
-            <pre className={"ty-target-text"}>{targetText}</pre>
-            <pre className={"ty-typed-text"}>{typedText}</pre>
+            <div className={"ty-typed-text"}>
+                <pre>{typedText}</pre>
+            </div>
+            <div className={"ty-next-char"}>
+                <pre><b><u>{nextChar === " " ? "_" : nextChar}</u></b></pre>
+            </div>
+            <div className={"ty-target-text"}>
+                <pre>{targetText}</pre>
+            </div>
+            <div className={"ty-typed-text"}>
+                <pre>{typedText}</pre>
+            </div>
             <input className={`ty-typing-input ${inputText.length > 0 && "ty-typing-input--typo"}`}
                    type={"text"}
                    onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
