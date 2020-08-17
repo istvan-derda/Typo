@@ -15,7 +15,7 @@ const TypingInterface = () => {
             setNextChar(targetText[0]);
             setTargetText(current => current.substr(1));
         }
-    }, [inputText])
+    }, [inputText, nextChar, targetText])
 
     return (
         <div className={"ty-typing-interface"}>
@@ -25,7 +25,7 @@ const TypingInterface = () => {
             <pre className={"ty-typed-text"}>{typedText}</pre>
             <input className={`ty-typing-input ${inputText.length > 0 && "ty-typing-input--typo"}`}
                    type={"text"}
-                   onInput={(e) => setInputText((e.target as HTMLInputElement).value)}
+                   onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
                    value={inputText}/>
         </div>
     )
