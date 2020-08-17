@@ -1,6 +1,9 @@
 .ty-typing-interface {
   display: grid;
-  grid-template-columns: 1fr 1em 1fr;
+  grid-template-columns: 1fr auto 1fr;
+
+  font-family: monospace;
+  font-size: 1.2em;
 
   .ty-typed-text {
     text-align: right;
@@ -17,5 +20,11 @@
     border: none;
     margin: 0;
     padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+
+    &.ty-typing-input--typo {
+      color: red;
+    }
   }
 }

@@ -1,31 +1,32 @@
 import "./TypingInterface.scss";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const TypingInterface = () => {
     const [targetText, setTargetText] = useState("isztelt hölgyeim és uraim!");
     const [nextChar, setNextChar] = useState("T")
     const [typedText, setTypedText] = useState("");
+    const [inputText, setInputText] = useState("");
 
-    const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-        const input = e.target as HTMLInputElement;
-        const char = input.value;
-        if (char === nextChar) {
-            setTypedText(current => current + char);
-            input.value = "";
+    useEffect(() => {
+        if (inputText === nextChar) {
+            setTypedText(current => current + inputText);
+            setInputText("");
             setNextChar(targetText[0]);
-            setTargetText(current => current.substr(1))
+            setTargetText(current => current.substr(1));
         }
-    }
-
+    }, [inputText])
 
     return (
         <div className={"ty-typing-interface"}>
-            <div className={"ty-typed-text"}>{typedText}</div>
-            <div className={"ty-next-char"}><b><u>{nextChar}</u></b></div>
-            <div className={"ty-target-text"}>{targetText}</div>
-            <div className={"ty-typed-text"}>{typedText}</div>
-            <input onInput={handleInput} className={"ty-typing-input"} type={"text"}/>
+            <pre className={"ty-typed-text"}>{typedText}</pre>
+            <pre className={"ty-next-char"}><b><u>{nextChar === " " ? "_" : nextChar}</u></b></pre>
+            <pre className={"ty-target-text"}>{targetText}</pre>
+            <pre className={"ty-typed-text"}>{typedText}</pre>
+            <input className={`ty-typing-input ${inputText.length > 0 && "ty-typing-input--typo"}`}
+                   type={"text"}
+                   onInput={(e) => setInputText((e.target as HTMLInputElement).value)}
+                   value={inputText}/>
         </div>
     )
 }
