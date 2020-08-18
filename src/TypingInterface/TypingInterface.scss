@@ -37,5 +37,14 @@
     &.ty-typing-input--typo {
       color: red;
     }
+
+    &.ty-typing-input--command-line {
+      color: #66f;
+    }
+
+    &.ty-typing-input--valid-command{
+      text-decoration: underline;
+      color: #66f;
+    }
   }
 }

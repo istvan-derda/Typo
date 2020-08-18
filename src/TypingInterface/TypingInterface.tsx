@@ -14,6 +14,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     const [lineIndex, setLineIndex] = useState(0);
 
     const endOfPracticeText = "End of practice. Type '/help' to see a list of available commands"
+    const availableCommands = ["/help","/load"]
 
     useEffect(() => { //onNextLine
         setTypedText("");
@@ -21,19 +22,33 @@ const TypingInterface = (props: TypingInterfaceProps) => {
         setNextChar(props.targetText[lineIndex]?.[0] ?? endOfPracticeText[0]);
     }, [lineIndex]); //eslint-disable-line
 
-    useEffect(()=>{
+    useEffect(() => {
         setLineIndex(0);
     }, [props.targetText])
 
     useEffect(() => { //onInput()
         if (inputText === nextChar && nextChar !== "") {
-            console.log(nextChar)
             setTypedText(current => current + inputText);
             setInputText("");
             setNextChar(nextToType[0]);
             setNextToType(current => current.substr(1));
         }
     }, [inputText]); //eslint-disable-line
+
+    const computeInputStyleClasses = (): string => {
+        if (inputText.length>0) {
+            if (inputText[0] === "/") {
+                if (availableCommands.includes(inputText)) {
+                    return "ty-typing-input--valid-command";
+                } else {
+                    return "ty-typing-input--command-line";
+                }
+            } else {
+                return "ty-typing-input--typo";
+            }
+        }
+        return "";
+    }
 
     return (
         <div className={"ty-typing-interface"}>
@@ -49,7 +64,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             <div className={"ty-typed-text"}>
                 <pre>{typedText.substring(typedText.length - 60 > 0 ? typedText.length - 60 : 0, typedText.length)}</pre>
             </div>
-            <input className={`ty-typing-input ${inputText.length > 0 && "ty-typing-input--typo"}`}
+            <input className={`ty-typing-input ${computeInputStyleClasses()}`}
                    type={"text"}
                    onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
                    onKeyDown={(e) => e.key === "Enter" && nextChar === undefined && setLineIndex(current => current + 1)}
