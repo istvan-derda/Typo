@@ -13,11 +13,17 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     const [inputText, setInputText] = useState("");
     const [lineIndex, setLineIndex] = useState(0);
 
-    useEffect(() => { //init()
+    const endOfPracticeText = "End of practice. Type '/help' to see a list of available commands"
+
+    useEffect(() => { //onNextLine
         setTypedText("");
-        setNextToType(props.targetText[lineIndex]?.substr(1) ?? "nd");
-        setNextChar(props.targetText[lineIndex]?.[0] ?? "E");
-    }, [props.targetText, lineIndex]);
+        setNextToType(props.targetText[lineIndex]?.substr(1) ?? endOfPracticeText.substr(1));
+        setNextChar(props.targetText[lineIndex]?.[0] ?? endOfPracticeText[0]);
+    }, [lineIndex]); //eslint-disable-line
+
+    useEffect(()=>{
+        setLineIndex(0);
+    }, [props.targetText])
 
     useEffect(() => { //onInput()
         if (inputText === nextChar && nextChar !== "") {
