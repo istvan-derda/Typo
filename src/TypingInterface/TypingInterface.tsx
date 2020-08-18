@@ -2,13 +2,24 @@ import "./TypingInterface.scss";
 
 import React, {useEffect, useState} from "react";
 
-const TypingInterface = () => {
-    const [nextToType, setNextToType] = useState("elcome to Typo, a typing-trainer where you decide, what you want to type! \"Typo\" is an acronym for \"Your Online Typing Practices\". It is developed with React and Typescript and optimized for Mozilla Firefox.");
-    const [nextChar, setNextChar] = useState("W")
+type TypingInterfaceProps = {
+    targetText: string[];
+}
+
+const TypingInterface = (props: TypingInterfaceProps) => {
+    const [nextToType, setNextToType] = useState("");
+    const [nextChar, setNextChar] = useState("")
     const [typedText, setTypedText] = useState("");
     const [inputText, setInputText] = useState("");
+    const [lineIndex, setLineIndex] = useState(0);
 
-    useEffect(() => {
+    useEffect(() => { //init()
+        setTypedText("");
+        setNextToType(props.targetText[lineIndex]?.substr(1) ?? "nd");
+        setNextChar(props.targetText[lineIndex]?.[0] ?? "E");
+    }, [props.targetText, lineIndex]);
+
+    useEffect(() => { //onInput()
         if (inputText === nextChar && nextChar !== "") {
             console.log(nextChar)
             setTypedText(current => current + inputText);
@@ -16,7 +27,7 @@ const TypingInterface = () => {
             setNextChar(nextToType[0]);
             setNextToType(current => current.substr(1));
         }
-    }, [inputText, nextToType, inputText])
+    }, [inputText]); //eslint-disable-line
 
     return (
         <div className={"ty-typing-interface"}>
@@ -35,7 +46,9 @@ const TypingInterface = () => {
             <input className={`ty-typing-input ${inputText.length > 0 && "ty-typing-input--typo"}`}
                    type={"text"}
                    onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
-                   value={inputText}/>
+                   onKeyDown={(e) => e.key === "Enter" && nextChar === undefined && setLineIndex(current => current + 1)}
+                   value={inputText}
+                   placeholder={nextChar===undefined ? "[Enter]" : ""}/>
         </div>
     )
 }
