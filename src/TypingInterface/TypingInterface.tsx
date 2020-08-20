@@ -6,20 +6,26 @@ type TypingInterfaceProps = {
     targetText: string[];
 }
 
-const TypingInterface = (props: TypingInterfaceProps) => {
-    const [nextToType, setNextToType] = useState("");
-    const [nextChar, setNextChar] = useState("")
-    const [typedText, setTypedText] = useState("");
-    const [inputText, setInputText] = useState("");
-    const [lineIndex, setLineIndex] = useState(0);
+enum InputState {default, typo, commandline, validCommand}
 
-    const endOfPracticeText = "End of practice. Type '/help' to see a list of available commands"
-    const availableCommands = ["/help","/load"]
+enum Command {"help", "load", "pause", length}
+
+const TypingInterface = (props: TypingInterfaceProps) => {
+    const [lineIndex, setLineIndex] = useState(0);
+    const [[typedText, nextChar, nextToType], setCurrentLine] = useState<[string, string, string]>(["", "", ""])
+    const [inputText, setInputText] = useState("");
+    const [inputState, setInputState] = useState<InputState>(InputState.default);
+
+    const endOfPracticeText = "End of practice. Type '/help' to see a list of available commands";
+    const availableCommands = Object.values(Command).slice(0, Command.length);
 
     useEffect(() => { //onNextLine
-        setTypedText("");
-        setNextToType(props.targetText[lineIndex]?.substr(1) ?? endOfPracticeText.substr(1));
-        setNextChar(props.targetText[lineIndex]?.[0] ?? endOfPracticeText[0]);
+        setCurrentLine(
+            [
+                "",
+                props.targetText[lineIndex]?.[0] ?? endOfPracticeText[0],
+                props.targetText[lineIndex]?.substr(1) ?? endOfPracticeText.substr(1)
+            ]);
     }, [lineIndex]); //eslint-disable-line
 
     useEffect(() => {
@@ -27,27 +33,31 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     }, [props.targetText])
 
     useEffect(() => { //onInput()
-        if (inputText === nextChar && nextChar !== "") {
-            setTypedText(current => current + inputText);
+        if (inputText === "") {
+            setInputState(InputState.default);
+            return;
+        }
+        if (inputText === nextChar) {
+            setCurrentLine(([typed, nextChar, toType]) => [typed + nextChar, toType[0], toType.substr(1)])
             setInputText("");
-            setNextChar(nextToType[0]);
-            setNextToType(current => current.substr(1));
-        }
-    }, [inputText]); //eslint-disable-line
-
-    const computeInputStyleClasses = (): string => {
-        if (inputText.length>0) {
-            if (inputText[0] === "/") {
-                if (availableCommands.includes(inputText)) {
-                    return "ty-typing-input--valid-command";
-                } else {
-                    return "ty-typing-input--command-line";
-                }
+            setInputState(InputState.default);
+        } else if (inputText[0] === "/" || inputText[0] === ":") {
+            if (availableCommands.includes(inputText.substr(1))) {
+                setInputState(InputState.validCommand);
             } else {
-                return "ty-typing-input--typo";
+                setInputState(InputState.commandline);
             }
+        } else {
+            setInputState(InputState.typo);
         }
-        return "";
+    }, [inputText]);  //eslint-disable-line
+
+    const handleEnter = () => {
+        if (inputState === InputState.validCommand) {
+            //Todo: dispatch events
+        } else if (nextChar === undefined) {
+            setLineIndex(current => current + 1)
+        }
     }
 
     return (
@@ -64,12 +74,15 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             <div className={"ty-typed-text"}>
                 <pre>{typedText.substring(typedText.length - 60 > 0 ? typedText.length - 60 : 0, typedText.length)}</pre>
             </div>
-            <input className={`ty-typing-input ${computeInputStyleClasses()}`}
+            <input className={`ty-typing-input 
+            ${(inputState === InputState.typo && "--typo")
+            || (inputState === InputState.commandline && "--command-line")
+            || (inputState === InputState.validCommand && "--valid-command")}`}
                    type={"text"}
                    onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
-                   onKeyDown={(e) => e.key === "Enter" && nextChar === undefined && setLineIndex(current => current + 1)}
+                   onKeyDown={(e) => e.key === "Enter" && handleEnter()}
                    value={inputText}
-                   placeholder={nextChar===undefined ? "[Enter]" : ""}/>
+                   placeholder={nextChar === undefined ? "[Enter]" : ""}/>
         </div>
     )
 }

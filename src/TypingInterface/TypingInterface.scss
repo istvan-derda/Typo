@@ -34,15 +34,15 @@
     font-size: inherit;
     height: fit-content;
 
-    &.ty-typing-input--typo {
+    &.--typo {
       color: red;
     }
 
-    &.ty-typing-input--command-line {
+    &.--command-line {
       color: #66f;
     }
 
-    &.ty-typing-input--valid-command{
+    &.--valid-command{
       text-decoration: underline;
       color: #66f;
     }
