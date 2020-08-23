@@ -1,15 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.scss';
 import TypingInterface from "./TypingInterface/TypingInterface";
 import {TypoEvent, TypoText} from "./common/commonTypes";
 
-enum ApplicationState {intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help, loading}
+enum ApplicationState {intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help}
 
 function App() {
     //TODO: loading from file
     const [practiceText, setPracticeText] = useState<TypoText>(initializeTypoText([" "])) //eslint-disable-line
     const [currentText, setCurrentText] = useState<TypoText>(initializeTypoText([" "]));
     const [applicationState, setApplicationState] = useState<ApplicationState>(ApplicationState.intro);
+
+    const fileInput = useRef<HTMLInputElement>(null);
 
     const handleEvent = (e: TypoEvent) => {
         switch (e) {
@@ -20,7 +22,7 @@ function App() {
                 setApplicationState(ApplicationState.help);
                 break;
             case TypoEvent.load:
-                setApplicationState(ApplicationState.loading);
+                fileInput.current?.click();
                 break;
         }
     }
@@ -88,6 +90,7 @@ function App() {
                     handleEvent={handleEvent}
                     incrementCursor={incrementCursor}/>
             </div>
+            <input ref={fileInput} type={"file"} hidden/>
         </div>
     );
 }
