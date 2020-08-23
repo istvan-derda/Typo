@@ -1,44 +1,46 @@
 import "./TypingInterface.scss";
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {TypoEvent, TypoText} from "../common/commonTypes";
 
 type TypingInterfaceProps = {
-    targetText: string[];
+    text: TypoText;
+    incrementCursor: () => void;
+    handleEvent: (e: TypoEvent) => void;
 }
 
 enum InputState {default, typo, commandline, validCommand}
 
-enum Command {"help", "load", "pause", length}
+enum TypoCommand {help="help", load="load", pause="pause"}
 
 const TypingInterface = (props: TypingInterfaceProps) => {
-    const [lineIndex, setLineIndex] = useState(0);
-    const [[typedText, nextChar, nextToType], setCurrentLine] = useState<[string, string, string]>(["", "", ""])
     const [inputText, setInputText] = useState("");
     const [inputState, setInputState] = useState<InputState>(InputState.default);
 
-    const endOfPracticeText = "End of practice. Type '/help' to see a list of available commands";
-    const availableCommands = Object.values(Command).slice(0, Command.length);
+    const availableCommands: string[] = Object.values(TypoCommand).slice(0, 3);
+    const {lines, lineIndex, charIndex} = props.text;
+    const typedText = lines[lineIndex].substr(0, charIndex);
+    const nextChar = lines[lineIndex][charIndex];
+    const toType = lines[lineIndex].substr(charIndex + 1, lines[lineIndex].length);
 
-    useEffect(() => { //onNextLine
-        setCurrentLine(
-            [
-                "",
-                props.targetText[lineIndex]?.[0] ?? endOfPracticeText[0],
-                props.targetText[lineIndex]?.substr(1) ?? endOfPracticeText.substr(1)
-            ]);
-    }, [lineIndex]); //eslint-disable-line
+    const inputField = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        setLineIndex(0);
-    }, [props.targetText])
+        const focusInput = () => inputField.current?.focus();
 
-    useEffect(() => { //onInput()
+        focusInput();
+        document.addEventListener("click", focusInput);
+
+        return () => document.removeEventListener("click", focusInput);
+    }, []);
+
+    useEffect(() => {
         if (inputText === "") {
             setInputState(InputState.default);
             return;
         }
         if (inputText === nextChar) {
-            setCurrentLine(([typed, nextChar, toType]) => [typed + nextChar, toType[0], toType.substr(1)])
+            props.incrementCursor();
             setInputText("");
             setInputState(InputState.default);
         } else if (inputText[0] === "/" || inputText[0] === ":") {
@@ -50,13 +52,24 @@ const TypingInterface = (props: TypingInterfaceProps) => {
         } else {
             setInputState(InputState.typo);
         }
-    }, [inputText]);  //eslint-disable-line
+    }, [inputText]); //eslint-disable-line
 
     const handleEnter = () => {
         if (inputState === InputState.validCommand) {
-            //Todo: dispatch events
-        } else if (nextChar === undefined) {
-            setLineIndex(current => current + 1)
+            switch (inputText.substr(1) as TypoCommand) {
+                case TypoCommand.help:
+                    props.handleEvent(TypoEvent.getHelp);
+                    break;
+                case TypoCommand.load:
+                    props.handleEvent(TypoEvent.load);
+                    break;
+                case TypoCommand.pause:
+                    props.handleEvent(TypoEvent.pause);
+                    break;
+            }
+            setInputText("");
+        } else if (nextChar === undefined && inputText === "") {
+            props.incrementCursor();
         }
     }
 
@@ -69,7 +82,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                 <pre><b><u>{nextChar}</u></b></pre>
             </div>
             <div className={"ty-target-text"}>
-                <pre>{nextToType.substr(0, 60)}</pre>
+                <pre>{toType.substr(0, 60)}</pre>
             </div>
             <div className={"ty-typed-text"}>
                 <pre>{typedText.substring(typedText.length - 60 > 0 ? typedText.length - 60 : 0, typedText.length)}</pre>
@@ -78,6 +91,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             ${(inputState === InputState.typo && "--typo")
             || (inputState === InputState.commandline && "--command-line")
             || (inputState === InputState.validCommand && "--valid-command")}`}
+                   ref={inputField}
                    type={"text"}
                    onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
                    onKeyDown={(e) => e.key === "Enter" && handleEnter()}
