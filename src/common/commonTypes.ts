@@ -1,5 +1,4 @@
-
-export enum TypoEvent { pause, getHelp, load}
+export enum TypoCommand { pause = "pause", help = "help", load = "load", resume = "resume"}
 
 export type TypoText = {
     lines: string[];
