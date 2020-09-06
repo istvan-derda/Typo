@@ -2,8 +2,11 @@ import React, {useEffect, useRef, useState} from 'react';
 import './App.scss';
 import TypingInterface from "./TypingInterface/TypingInterface";
 import {TypoCommand, TypoText} from "./common/commonTypes";
+import PasteField from "./PasteField/PasteField";
 
-enum ApplicationState {intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help}
+enum ApplicationState {
+    intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help, paste,
+}
 
 function App() {
     const [practiceText, setPracticeText] = useState<TypoText>(initializePractice([" "]))
@@ -20,11 +23,17 @@ function App() {
             case TypoCommand.help:
                 setApplicationState(ApplicationState.help);
                 break;
+            case TypoCommand.skip:
+                incrementCursor();
+                break;
             case TypoCommand.load:
                 fileInput.current?.click();
                 break;
             case TypoCommand.resume:
                 setCurrentText(practiceText);
+                break;
+            case TypoCommand.paste:
+                setApplicationState(ApplicationState.paste);
                 break;
         }
     }
@@ -94,17 +103,28 @@ function App() {
         }
     }
 
+    const handlePastePlainText = (plainText: string) => {
+        const practice = makeTypoTextFromPlainText(plainText)
+        setPracticeText(practice)
+        setCurrentText(practice)
+        setApplicationState(ApplicationState.inPractice)
+    }
+
     const makeTypoTextFromPlainText = (plainText: string): TypoText => initializePractice(plainText.split("\n"))
 
 
     return (
         <div className="ty-app">
             <h1 className={"ty-app-title"}>The beginning of Typo</h1>
-            <div className={"ty-center"}>
-                <TypingInterface
-                    text={currentText}
-                    handleCommand={handleCommand}
-                    incrementCursor={incrementCursor}/>
+            <div className={"ty-center"}>{
+                (applicationState === ApplicationState.paste
+                    && <PasteField handlePlainTextInput={handlePastePlainText}/>)
+                || (
+                    <TypingInterface
+                        text={currentText}
+                        handleCommand={handleCommand}
+                        incrementCursor={incrementCursor}/>)
+            }
             </div>
             <input ref={fileInput} type={"file"} hidden onChange={onFileSelection}/>
         </div>

@@ -14,7 +14,7 @@ enum InputMode {default, typo, commandline, validCommand}
 const TypingInterface = (props: TypingInterfaceProps) => {
     const [inputMode, setInputMode] = useState<InputMode>(InputMode.default);
 
-    const availableCommands: string[] = Object.values(TypoCommand).slice(0, 3);
+    const availableCommands: string[] = Object.values(TypoCommand).slice(0, 6);
     const {lines, lineIndex, charIndex} = props.text;
     const typedText = lines[lineIndex].substr(0, charIndex);
     const nextChar = lines[lineIndex][charIndex];
