@@ -146,7 +146,7 @@ function App() {
 
     return (
         <div className="ty-app">
-            <h1 className={"ty-app-title"}>The beginning of Typo</h1>
+            <h1 className={"ty-app-title"}>The beginning of Typo<sup><sup>(alpha)</sup></sup></h1>
             <div className={"ty-center"}>{
                 (applicationState === ApplicationState.paste
                     && <PasteField handlePlainTextInput={handlePastePlainText}/>)
