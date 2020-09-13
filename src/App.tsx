@@ -73,7 +73,7 @@ function App() {
         ]
         const pauseText = ["resume"];
         const endOfPracticeText = ["End of practice. Type '/help' to see a list of available commands"];
-        const helpText = ["/resume: back to practice. /help: show this text. /pause: pause a practice. /load: load a new practice. You can start commands with either ':' or '/'"];
+        const helpText = ["/s: skip a character. /load: open a plain text-file from your machine. /paste: paste some text you'd like to type. You can start commands with either ':' or '/'"];
 
         switch (applicationState) {
             case ApplicationState.endOfPractice:
