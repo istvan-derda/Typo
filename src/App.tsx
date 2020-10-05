@@ -119,6 +119,20 @@ function App() {
         }
     }
 
+    const decrementCursor = () => {
+        if (currentText.charIndex > 0) {
+            setCurrentText(({charIndex, lineIndex, lines}) => {
+                return {charIndex: charIndex - 1, lineIndex: lineIndex, lines: lines}
+            });
+        } else if (currentText.lineIndex > 0) {
+            setCurrentText(({lines, lineIndex}) => ({
+                lineIndex: lineIndex - 1,
+                charIndex: currentText.lines[lineIndex - 1].length,
+                lines
+            }));
+        }
+    }
+
     const onFileSelection = (e: React.FormEvent<HTMLInputElement>) => {
         const inputElement = (e.target as HTMLInputElement);
         let file = inputElement.files?.[0];
@@ -154,7 +168,8 @@ function App() {
                     <TypingInterface
                         text={currentText}
                         handleCommand={handleCommand}
-                        incrementCursor={incrementCursor}/>)
+                        incrementCursor={incrementCursor}
+                        decrementCursor={decrementCursor}/>)
             }
             </div>
             <input ref={fileInput} type={"file"} hidden onChange={onFileSelection}/>

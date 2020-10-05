@@ -6,6 +6,7 @@ import {TypoCommand, TypoText} from "../common/commonTypes";
 type TypingInterfaceProps = {
     text: TypoText;
     incrementCursor: () => void;
+    decrementCursor: () => void;
     handleCommand: (e: TypoCommand) => void;
 }
 
@@ -94,7 +95,10 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                    ref={inputField}
                    type={"text"}
                    onChange={handleChange}
-                   onKeyDown={(e) => e.key === "Enter" && handleEnter(e)}
+                   onKeyDown={(e) => {
+                       if (e.key === "Enter") handleEnter(e);
+                       if (e.key === "Backspace" && (e.target as HTMLInputElement).value === "") props.decrementCursor();
+                   }}
                    placeholder={nextChar === undefined ? "[Enter]" : ""}/>
         </div>
     )
