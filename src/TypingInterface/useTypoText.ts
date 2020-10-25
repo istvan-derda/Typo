@@ -1,28 +1,23 @@
 import {useState} from "react";
+import {endOfPracticeText} from "../resources/texts";
 
-type TypoTextState = {
+export type TypoTextState = {
     readonly lines: String[]
     readonly lineIndex: number
     readonly charIndex: number
 }
 
-type TypoText = {
-    typedText: String
-    textToType: String
-    nextChar: String
-    moveForward: () => void
-    moveBack: () => void
-}
-
-const endOfPracticeText: TypoTextState = {
-    lines: ["End of practice. Type '/help' to see a list of available commands"],
-    charIndex: 0,
-    lineIndex: 0
+export type TypoText = {
+    readonly typedText: String
+    readonly textToType: String
+    readonly nextChar: String
+    readonly moveForward: () => void
+    readonly moveBack: () => void
 }
 
 
-function useTypoText(initialText: TypoTextState): TypoText {
-    const [{lines, lineIndex, charIndex}, setTypoText] = useState<TypoTextState>(initialText)
+function useTypoText(initialText: String[]): TypoText {
+    const [{lines, lineIndex, charIndex}, setTypoText] = useState<TypoTextState>(toTypoText(initialText))
 
     const lastCharIndex = lines[lineIndex].length - 1
     const lastLineIndex = lines.length - 1
@@ -46,7 +41,7 @@ function useTypoText(initialText: TypoTextState): TypoText {
     function moveToNextLine(prev: TypoTextState): TypoTextState {
         const newLineIndex = lineIndex + 1
         if (newLineIndex > lastLineIndex) {
-            return endOfPracticeText
+            return toTypoText(endOfPracticeText)
         }
         return {...prev, lineIndex: newLineIndex, charIndex: 0}
     }
@@ -67,6 +62,17 @@ function useTypoText(initialText: TypoTextState): TypoText {
         nextChar: lines[lineIndex][charIndex],
         textToType: lines[lineIndex].substr(charIndex + 1, lines[lineIndex].length - 1),
     })
+}
+
+
+function toTypoText(lines: String[]): TypoTextState {
+    return (
+        {
+            lines: lines,
+            lineIndex: 0,
+            charIndex: 0,
+        }
+    )
 }
 
 export default useTypoText

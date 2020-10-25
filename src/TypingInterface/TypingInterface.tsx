@@ -1,12 +1,11 @@
 import "./TypingInterface.scss";
 
 import React, {useEffect, useRef, useState} from "react";
-import {TypoCommand, TypoTextDeprecated} from "../common/commonTypes";
+import {TypoCommand} from "../common/commonTypes";
+import useTypoText from "./useTypoText";
+import {introText} from "../resources/texts";
 
 type TypingInterfaceProps = {
-    text: TypoTextDeprecated;
-    incrementCursor: () => void;
-    decrementCursor: () => void;
     handleCommand: (e: TypoCommand) => void;
 }
 
@@ -16,11 +15,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     const [inputMode, setInputMode] = useState<InputMode>(InputMode.default);
 
     const availableCommands: string[] = Object.values(TypoCommand).slice(0, 6);
-    const {lines, lineIndex, charIndex} = props.text;
-    const typedText = lines[lineIndex].substr(0, charIndex);
-    const nextChar = lines[lineIndex][charIndex];
-    const toType = lines[lineIndex].substr(charIndex + 1, lines[lineIndex].length);
-
+    const typoText = useTypoText(introText)
     const inputField = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -44,8 +39,8 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             setInputMode(InputMode.default);
             return;
         }
-        if (inputText === nextChar) {
-            props.incrementCursor();
+        if (inputText === typoText.nextChar) {
+            typoText.moveForward();
             (e.target as HTMLInputElement).value = "";
             setInputMode(InputMode.default);
         } else if (inputText[0] === "/" || inputText[0] === ":") {
@@ -66,8 +61,8 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             (e.target as HTMLInputElement).value = "";
             setInputMode(InputMode.default);
             props.handleCommand(command)
-        } else if (nextChar === undefined && inputText === "") {
-            props.incrementCursor();
+        } else if (typoText.nextChar === undefined && inputText === "") {
+            typoText.moveForward()
         } else {
             (e.target as HTMLInputElement).value += "⮐";
             setInputMode(InputMode.typo);
@@ -77,16 +72,16 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     return (
         <div className={"ty-typing-interface"}>
             <div className={"ty-typed-text"}>
-                <pre>{typedText.substring(typedText.length - 60 > 0 ? typedText.length - 60 : 0, typedText.length)}</pre>
+                <pre>{typoText.typedText.substring(typoText.typedText.length - 60 > 0 ? typoText.typedText.length - 60 : 0, typoText.typedText.length)}</pre>
             </div>
             <div className={"ty-next-char"}>
-                <pre><b><u>{nextChar}</u></b></pre>
+                <pre><b><u>{typoText.nextChar}</u></b></pre>
             </div>
             <div className={"ty-target-text"}>
-                <pre>{toType.substr(0, 60)}</pre>
+                <pre>{typoText.textToType.substr(0, 60)}</pre>
             </div>
             <div className={"ty-typed-text"}>
-                <pre>{typedText.substring(typedText.length - 60 > 0 ? typedText.length - 60 : 0, typedText.length)}</pre>
+                <pre>{typoText.typedText.substring(typoText.typedText.length - 60 > 0 ? typoText.typedText.length - 60 : 0, typoText.typedText.length)}</pre>
             </div>
             <input className={`ty-typing-input 
             ${(inputMode === InputMode.typo && "--typo")
@@ -97,9 +92,9 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                    onChange={handleChange}
                    onKeyDown={(e) => {
                        if (e.key === "Enter") handleEnter(e);
-                       if (e.key === "Backspace" && (e.target as HTMLInputElement).value === "") props.decrementCursor();
+                       if (e.key === "Backspace" && (e.target as HTMLInputElement).value === "") typoText.moveBack();
                    }}
-                   placeholder={nextChar === undefined ? "[Enter]" : ""}/>
+                   placeholder={typoText.nextChar === undefined ? "[Enter]" : ""}/>
         </div>
     )
 }
