@@ -1,10 +1,10 @@
 import "./TypingInterface.scss";
 
 import React, {useEffect, useRef, useState} from "react";
-import {TypoCommand, TypoText} from "../common/commonTypes";
+import {TypoCommand, TypoTextDeprecated} from "../common/commonTypes";
 
 type TypingInterfaceProps = {
-    text: TypoText;
+    text: TypoTextDeprecated;
     incrementCursor: () => void;
     decrementCursor: () => void;
     handleCommand: (e: TypoCommand) => void;
