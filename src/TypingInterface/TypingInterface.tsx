@@ -14,23 +14,11 @@ enum InputMode {default, typo, commandline, validCommand}
 const TypingInterface = (props: TypingInterfaceProps) => {
     const [inputMode, setInputMode] = useState<InputMode>(InputMode.default);
 
-    const availableCommands: string[] = Object.values(TypoCommand).slice(0, 6);
+    const availableCommands: string[] = enumToArray(TypoCommand)
     const typoText = useTypoText(introText)
     const inputField = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        const focusInput = () => inputField.current?.focus();
-
-        const alwaysFocusOnInput = () => {
-            focusInput();
-            document.addEventListener("click", focusInput);
-        }
-
-        const cleanup = () => document.removeEventListener("click", focusInput)
-
-        alwaysFocusOnInput();
-        return cleanup;
-    }, []);
+    useAlwaysFocusOn(inputField)
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         const inputText = (e.target as HTMLInputElement).value;
@@ -100,3 +88,25 @@ const TypingInterface = (props: TypingInterfaceProps) => {
 }
 
 export default TypingInterface;
+
+function enumToArray<T>(type: T): string[] {
+    return Object.values(type).slice(0, Object.values(type).length)
+}
+
+function useAlwaysFocusOn(inputElement: React.RefObject<HTMLInputElement>) {
+    useEffect(() => {
+        const focusInput = () => inputElement.current?.focus();
+
+        const alwaysFocusOnInput = () => {
+            focusInput();
+            document.addEventListener("click", focusInput);
+        }
+
+        const cleanup = () => {
+            document.removeEventListener("click", focusInput)
+        }
+
+        alwaysFocusOnInput();
+        return cleanup;
+    }, []) // eslint-disable-line
+}
