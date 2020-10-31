@@ -9,7 +9,7 @@ type TypingInterfaceProps = {
     handleCommand: (e: TypoCommand) => void;
 }
 
-enum InputMode {default, typo, commandline, validCommand}
+enum InputMode {default, typingError, commandline, validCommand}
 
 const TypingInterface = (props: TypingInterfaceProps) => {
     const [inputMode, setInputMode] = useState<InputMode>(InputMode.default);
@@ -38,7 +38,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                 setInputMode(InputMode.commandline);
             }
         } else {
-            setInputMode(InputMode.typo);
+            setInputMode(InputMode.typingError);
         }
     }
 
@@ -53,7 +53,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
             typoText.moveForward()
         } else {
             (e.target as HTMLInputElement).value += "⮐";
-            setInputMode(InputMode.typo);
+            setInputMode(InputMode.typingError);
         }
     }
 
@@ -72,7 +72,7 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                 <pre>{typoText.typedText.substring(typoText.typedText.length - 60 > 0 ? typoText.typedText.length - 60 : 0, typoText.typedText.length)}</pre>
             </div>
             <input className={`ty-typing-input 
-            ${(inputMode === InputMode.typo && "--typo")
+            ${(inputMode === InputMode.typingError && "--typo")
             || (inputMode === InputMode.commandline && "--command-line")
             || (inputMode === InputMode.validCommand && "--valid-command")}`}
                    ref={inputField}
