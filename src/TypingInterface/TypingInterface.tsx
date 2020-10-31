@@ -64,6 +64,7 @@ const TypingInterface = () => {
             case TypingInterfaceCommand.resume:
                 break;
             case TypingInterfaceCommand.skip:
+                typoText.moveForward()
                 break;
             case TypingInterfaceCommand.paste:
                 break;
