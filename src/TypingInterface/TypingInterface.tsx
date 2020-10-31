@@ -9,10 +9,10 @@ type TypingInterfaceProps = {
     handleCommand: (e: TypoCommand) => void;
 }
 
-enum InputMode {default, typingError, commandline, validCommand}
+enum InputState {default, typingError, commandline, validCommand}
 
 const TypingInterface = (props: TypingInterfaceProps) => {
-    const [inputMode, setInputMode] = useState<InputMode>(InputMode.default);
+    const [inputState, setInputState] = useState<InputState>(InputState.default);
 
     const availableCommands: string[] = enumToArray(TypoCommand)
     const typoText = useTypoText(introText)
@@ -22,38 +22,38 @@ const TypingInterface = (props: TypingInterfaceProps) => {
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         const inputText = (e.target as HTMLInputElement).value;
-
         if (inputText === "") {
-            setInputMode(InputMode.default);
+            setInputState(InputState.default);
             return;
         }
+
         if (inputText === typoText.nextChar) {
             typoText.moveForward();
             (e.target as HTMLInputElement).value = "";
-            setInputMode(InputMode.default);
+            setInputState(InputState.default);
         } else if (inputText[0] === "/" || inputText[0] === ":") {
             if (availableCommands.includes(inputText.substr(1))) {
-                setInputMode(InputMode.validCommand);
+                setInputState(InputState.validCommand);
             } else {
-                setInputMode(InputMode.commandline);
+                setInputState(InputState.commandline);
             }
         } else {
-            setInputMode(InputMode.typingError);
+            setInputState(InputState.typingError);
         }
     }
 
     const handleEnter = (e: React.FormEvent<HTMLInputElement>) => {
         const inputText = (e.target as HTMLInputElement).value
-        if (inputMode === InputMode.validCommand) {
+        if (inputState === InputState.validCommand) {
             let command = inputText.substr(1) as TypoCommand
             (e.target as HTMLInputElement).value = "";
-            setInputMode(InputMode.default);
+            setInputState(InputState.default);
             props.handleCommand(command)
         } else if (typoText.nextChar === undefined && inputText === "") {
             typoText.moveForward()
         } else {
             (e.target as HTMLInputElement).value += "⮐";
-            setInputMode(InputMode.typingError);
+            setInputState(InputState.typingError);
         }
     }
 
@@ -72,9 +72,9 @@ const TypingInterface = (props: TypingInterfaceProps) => {
                 <pre>{typoText.typedText.substring(typoText.typedText.length - 60 > 0 ? typoText.typedText.length - 60 : 0, typoText.typedText.length)}</pre>
             </div>
             <input className={`ty-typing-input 
-            ${(inputMode === InputMode.typingError && "--typo")
-            || (inputMode === InputMode.commandline && "--command-line")
-            || (inputMode === InputMode.validCommand && "--valid-command")}`}
+            ${(inputState === InputState.typingError && "--typo")
+            || (inputState === InputState.commandline && "--command-line")
+            || (inputState === InputState.validCommand && "--valid-command")}`}
                    ref={inputField}
                    type={"text"}
                    onChange={handleChange}
