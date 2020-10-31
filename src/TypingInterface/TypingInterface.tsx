@@ -5,10 +5,10 @@ import useTypoText from "./useTypoText";
 import {introText} from "../resources/texts";
 
 enum TypingInterfaceCommand {
-    help = "help: lists all available commands",
-    load = "load: open a file from your machine",
-    paste = "paste: lets you paste text from your clipboard",
-    skip = "s: skip the next character",
+    help = "help",
+    load = "load",
+    paste = "paste",
+    skip = "s",
 }
 
 enum InputState {default, typingError, commandline, validCommand}
@@ -33,7 +33,6 @@ const TypingInterface = () => {
             setInputState(InputState.default);
         } else if (inputText[0] === "/" || inputText[0] === ":") {
             const availableCommands: string[] = enumToStrings(TypingInterfaceCommand)
-                .map(value => value.split(":")[0])
             if (availableCommands.includes(inputText.substr(1))) {
                 setInputState(InputState.validCommand);
             } else {
