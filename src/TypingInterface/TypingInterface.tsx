@@ -4,7 +4,8 @@ import React, {useEffect, useRef, useState} from "react";
 import useTypoText from "./useTypoText";
 import {introText} from "../resources/texts";
 
-enum TypingInterfaceCommand { pause = "pause", help = "help", load = "load", resume = "resume", skip = "s", paste = "paste"}
+enum TypingInterfaceCommand { help = "help", load = "load", skip = "s", paste = "paste"}
+
 enum InputState {default, typingError, commandline, validCommand}
 
 const TypingInterface = () => {
@@ -16,7 +17,7 @@ const TypingInterface = () => {
 
     useAlwaysFocusOn(inputField)
 
-    const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    function handleChange(e: React.FormEvent<HTMLInputElement>) {
         const inputText = (e.target as HTMLInputElement).value;
         if (inputText === "") {
             setInputState(InputState.default);
@@ -38,7 +39,7 @@ const TypingInterface = () => {
         }
     }
 
-    const handleEnter = (e: React.FormEvent<HTMLInputElement>) => {
+    function handleEnter(e: React.FormEvent<HTMLInputElement>) {
         const inputText = (e.target as HTMLInputElement).value
         if (inputState === InputState.validCommand) {
             let command = inputText.substr(1) as TypingInterfaceCommand
@@ -55,13 +56,9 @@ const TypingInterface = () => {
 
     function handleCommand(command: TypingInterfaceCommand) {
         switch (command) {
-            case TypingInterfaceCommand.pause:
-                break;
             case TypingInterfaceCommand.help:
                 break;
             case TypingInterfaceCommand.load:
-                break;
-            case TypingInterfaceCommand.resume:
                 break;
             case TypingInterfaceCommand.skip:
                 typoText.moveForward()
@@ -109,14 +106,16 @@ function enumToArray<T>(type: T): string[] {
 
 function useAlwaysFocusOn(inputElement: React.RefObject<HTMLInputElement>) {
     useEffect(() => {
-        const focusInput = () => inputElement.current?.focus();
+        function focusInput() {
+            inputElement.current?.focus();
+        }
 
-        const alwaysFocusOnInput = () => {
+        function alwaysFocusOnInput() {
             focusInput();
             document.addEventListener("click", focusInput);
         }
 
-        const cleanup = () => {
+        function cleanup() {
             document.removeEventListener("click", focusInput)
         }
 
