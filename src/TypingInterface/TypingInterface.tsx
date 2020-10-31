@@ -1,20 +1,16 @@
 import "./TypingInterface.scss";
 
 import React, {useEffect, useRef, useState} from "react";
-import {TypoCommand} from "../common/commonTypes";
 import useTypoText from "./useTypoText";
 import {introText} from "../resources/texts";
 
-type TypingInterfaceProps = {
-    handleCommand: (e: TypoCommand) => void;
-}
-
+enum TypingInterfaceCommand { pause = "pause", help = "help", load = "load", resume = "resume", skip = "s", paste = "paste"}
 enum InputState {default, typingError, commandline, validCommand}
 
-const TypingInterface = (props: TypingInterfaceProps) => {
+const TypingInterface = () => {
     const [inputState, setInputState] = useState<InputState>(InputState.default);
 
-    const availableCommands: string[] = enumToArray(TypoCommand)
+    const availableCommands: string[] = enumToArray(TypingInterfaceCommand)
     const typoText = useTypoText(introText)
     const inputField = useRef<HTMLInputElement>(null);
 
@@ -45,15 +41,32 @@ const TypingInterface = (props: TypingInterfaceProps) => {
     const handleEnter = (e: React.FormEvent<HTMLInputElement>) => {
         const inputText = (e.target as HTMLInputElement).value
         if (inputState === InputState.validCommand) {
-            let command = inputText.substr(1) as TypoCommand
+            let command = inputText.substr(1) as TypingInterfaceCommand
             (e.target as HTMLInputElement).value = "";
             setInputState(InputState.default);
-            props.handleCommand(command)
+            handleCommand(command)
         } else if (typoText.nextChar === undefined && inputText === "") {
             typoText.moveForward()
         } else {
             (e.target as HTMLInputElement).value += "⮐";
             setInputState(InputState.typingError);
+        }
+    }
+
+    function handleCommand(command: TypingInterfaceCommand) {
+        switch (command) {
+            case TypingInterfaceCommand.pause:
+                break;
+            case TypingInterfaceCommand.help:
+                break;
+            case TypingInterfaceCommand.load:
+                break;
+            case TypingInterfaceCommand.resume:
+                break;
+            case TypingInterfaceCommand.skip:
+                break;
+            case TypingInterfaceCommand.paste:
+                break;
         }
     }
 

@@ -37,6 +37,7 @@
 
     &.--typo {
       color: red;
+      text-decoration: underline;
     }
 
     &.--command-line {
@@ -45,6 +46,7 @@
 
     &.--valid-command{
       text-decoration: underline;
+      font-weight: bold;
       color: #66f;
     }
   }
