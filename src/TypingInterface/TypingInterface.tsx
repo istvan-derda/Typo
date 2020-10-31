@@ -4,14 +4,17 @@ import React, {useEffect, useRef, useState} from "react";
 import useTypoText from "./useTypoText";
 import {introText} from "../resources/texts";
 
-enum TypingInterfaceCommand { help = "help", load = "load", skip = "s", paste = "paste"}
+enum TypingInterfaceCommand {
+    help = "help: lists all available commands",
+    load = "load: open a file from your machine",
+    paste = "paste: lets you paste text from your clipboard",
+    skip = "s: skip the next character",
+}
 
 enum InputState {default, typingError, commandline, validCommand}
 
 const TypingInterface = () => {
     const [inputState, setInputState] = useState<InputState>(InputState.default);
-
-    const availableCommands: string[] = enumToArray(TypingInterfaceCommand)
     const typoText = useTypoText(introText)
     const inputField = useRef<HTMLInputElement>(null);
 
@@ -29,6 +32,8 @@ const TypingInterface = () => {
             (e.target as HTMLInputElement).value = "";
             setInputState(InputState.default);
         } else if (inputText[0] === "/" || inputText[0] === ":") {
+            const availableCommands: string[] = enumToStrings(TypingInterfaceCommand)
+                .map(value => value.split(":")[0])
             if (availableCommands.includes(inputText.substr(1))) {
                 setInputState(InputState.validCommand);
             } else {
@@ -100,7 +105,7 @@ const TypingInterface = () => {
 
 export default TypingInterface;
 
-function enumToArray<T>(type: T): string[] {
+function enumToStrings<T>(type: T): string[] {
     return Object.values(type).slice(0, Object.values(type).length)
 }
 
