@@ -12,18 +12,25 @@ export type TypoAppActions = {
     pasteText: () => void;
     loadText: () => void;
     toggleHelp: () => void;
+    setThemeToSepia: () => void;
+    setThemeToDefault: () => void;
 }
+
+enum TypoTheme { white, sepia}
 
 function App() {
     const typoText = useTypoText(introText)
     const [interfaceToDisplay, setInterfaceToDisplay] = useState<UiInterfaces>(UiInterfaces.typingInterface)
     const [displayHelp, setDisplayHelp] = useState(false)
+    const [theme, setTheme] = useState(TypoTheme.white)
     const fileInput = useRef<HTMLInputElement>(null)
 
     const typoAppActions: TypoAppActions = {
         toggleHelp: () => setDisplayHelp(prev => !prev),
         loadText: () => fileInput.current?.click(),
-        pasteText: () => setInterfaceToDisplay(UiInterfaces.pasteInterface)
+        pasteText: () => setInterfaceToDisplay(UiInterfaces.pasteInterface),
+        setThemeToDefault: () => setTheme(TypoTheme.white),
+        setThemeToSepia: () => setTheme(TypoTheme.sepia)
     }
 
     function onFileSelection(e: React.FormEvent<HTMLInputElement>) {
@@ -48,7 +55,7 @@ function App() {
 
 
     return (
-        <div className="ty-app --sepia">
+        <div className={`ty-app ${theme === TypoTheme.sepia && "--sepia"}`}>
             <h1 className={"ty-app-title"}>The beginning of Typo<sup><sup>(alpha)</sup></sup></h1>
             <div className={"ty-center"}>{
                 (interfaceToDisplay === UiInterfaces.pasteInterface

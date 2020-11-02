@@ -3,7 +3,14 @@ import React, {useRef, useState} from "react";
 import useAlwaysFocusOn from "../../common/useAlwaysFocusOn";
 import {TypoAppActions} from "../../App";
 
-enum TypingInterfaceCommand { help = "help", load = "load", paste = "paste", skip = "s",}
+enum TypingInterfaceCommand {
+    help = "help",
+    load = "load",
+    paste = "paste",
+    skip = "s",
+    setThemeToSepia = "theme-sepia",
+    setThemeToWhite = "theme-white",
+}
 
 enum InputState {default, typingError, commandline, validCommand}
 
@@ -69,6 +76,12 @@ function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar, typo
                 break;
             case TypingInterfaceCommand.skip:
                 typoTextForward()
+                break;
+            case TypingInterfaceCommand.setThemeToSepia:
+                typoAppActions.setThemeToSepia()
+                break;
+            case TypingInterfaceCommand.setThemeToWhite:
+                typoAppActions.setThemeToDefault()
                 break;
             case TypingInterfaceCommand.paste:
                 typoAppActions.pasteText()
