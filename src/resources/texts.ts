@@ -1,6 +1,6 @@
 
 
-export const endOfPracticeText = ["End of practice. Type '/help' to see a list of available commands"]
+export const endOfPracticeText = ["End of practice. Type ':help' to see a list of available commands"]
 
 export const introText = [
     "Type this.",
@@ -34,4 +34,3 @@ export const introText = [
     "Well, that is some boring stuff right there, isn't it?",
     "I'll just redirect you to the main menu. Was nice to meet you!"
 ]
-export const pauseText = ["resume"];

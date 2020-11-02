@@ -1,20 +1,17 @@
 import "./TypingInterface.scss";
 
 import React from "react";
-import useTypoText from "./useTypoText";
-import {introText} from "../resources/texts";
+import {TypoText} from "../useTypoText";
 import TypingInputField from "./TypingInputField/TypingInputField";
+import {TypoAppActions} from "../App";
 
+type TypingInterfaceProps = {
+    typoText: TypoText;
+    typoAppActions: TypoAppActions;
+}
 
-const TypingInterface = () => {
-    const {
-        nextChar,
-        moveForward,
-        moveBack,
-        textToType,
-        typedText,
-        setText
-    } = useTypoText(introText)
+const TypingInterface = (props: TypingInterfaceProps) => {
+    const {typedText, nextChar, textToType, moveForward, moveBack} = props.typoText
 
     return (
         <div className={"ty-typing-interface"}>
@@ -34,6 +31,7 @@ const TypingInterface = () => {
                 typoTextForward={moveForward}
                 typoTextBack={moveBack}
                 typoTextNextChar={nextChar}
+                typoAppActions={props.typoAppActions}
             />
         </div>
     )

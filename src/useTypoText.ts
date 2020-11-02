@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {endOfPracticeText} from "../resources/texts";
+import {endOfPracticeText} from "./resources/texts";
 
 export type TypoTextState = {
     readonly lines: String[]
@@ -13,7 +13,7 @@ export type TypoText = {
     readonly nextChar: String
     readonly moveForward: () => void
     readonly moveBack: () => void
-    readonly setText: (lines: String[], charIndex: number, lineIndex: number) => void
+    readonly setText: (lines: String[], charIndex?: number, lineIndex?: number) => void
 }
 
 

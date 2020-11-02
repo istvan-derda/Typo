@@ -1,37 +1,56 @@
 import React, {useRef, useState} from 'react';
 import './App.scss';
 import TypingInterface from "./TypingInterface/TypingInterface";
-import PasteField from "./PasteField/PasteField";
+import PasteInterface from "./PasteField/PasteInterface";
+import useTypoText from "./useTypoText";
+import {introText} from "./resources/texts";
 
-enum ApplicationState {
-    intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help, paste,
+enum UiInterfaces { typingInterface, pasteInterface,}
+
+export type TypoAppActions = {
+    pasteText: () => void;
+    loadText: () => void;
+    displayHelp: () => void;
 }
 
 function App() {
-    const [applicationState, setApplicationState] = useState<ApplicationState>(ApplicationState.intro);
-
+    const typoText = useTypoText(introText)
+    const [interfaceToDisplay, setInterfaceToDisplay] = useState<UiInterfaces>(UiInterfaces.typingInterface);
     const fileInput = useRef<HTMLInputElement>(null);
 
-    const onFileSelection = (e: React.FormEvent<HTMLInputElement>) => {
+    function pasteText() {
+        setInterfaceToDisplay(UiInterfaces.pasteInterface)
+
+    }
+
+    function loadTextFromFile() {
+        fileInput.current?.click()
+    }
+
+    function displayHelp() {
+
+    }
+
+    const typoAppActions: TypoAppActions = {displayHelp: displayHelp, loadText: loadTextFromFile, pasteText: pasteText}
+
+    function onFileSelection(e: React.FormEvent<HTMLInputElement>) {
         const inputElement = (e.target as HTMLInputElement);
         let file = inputElement.files?.[0];
         if (file !== undefined) {
             let fileReader = new FileReader();
             fileReader.readAsText(file)
             fileReader.onload = () => {
-                //const practice = makeTypoTextFromPlainText(typeof fileReader.result === "string" ? fileReader.result : "")
-                //setPracticeText(practice)
-                //setCurrentText(practice)
+                const lines = (typeof fileReader.result === "string" ? fileReader.result : "").split("\n")
+                typoText.setText(lines)
             }
             fileReader.onerror = () => console.error(fileReader.error);
         }
     }
 
-    const handlePastePlainText = (plainText: string) => {
-        //const practice = makeTypoTextFromPlainText(plainText)
-        //setPracticeText(practice)
-        //setCurrentText(practice)
-        setApplicationState(ApplicationState.inPractice)
+    function handlePastePlainText(plainText: string) {
+        const practice = plainText.split("\n")
+        typoText.setText(practice)
+        setInterfaceToDisplay(UiInterfaces.typingInterface)
     }
 
 
@@ -39,9 +58,10 @@ function App() {
         <div className="ty-app --sepia">
             <h1 className={"ty-app-title"}>The beginning of Typo<sup><sup>(alpha)</sup></sup></h1>
             <div className={"ty-center"}>{
-                (applicationState === ApplicationState.paste
-                    && <PasteField handlePlainTextInput={handlePastePlainText}/>)
-                || <TypingInterface/>
+                (interfaceToDisplay === UiInterfaces.pasteInterface
+                    && <PasteInterface handlePlainTextInput={handlePastePlainText}/>)
+                ||
+                <TypingInterface typoAppActions={typoAppActions} typoText={typoText}/>
             }
             </div>
             <div className={"ty-bottom"}>

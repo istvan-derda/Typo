@@ -1,6 +1,7 @@
 import "./TypingInputField.scss"
 import React, {useRef, useState} from "react";
 import useAlwaysFocusOn from "../../common/useAlwaysFocusOn";
+import {TypoAppActions} from "../../App";
 
 enum TypingInterfaceCommand { help = "help", load = "load", paste = "paste", skip = "s",}
 
@@ -10,10 +11,11 @@ type TypingInputFieldProps = {
     typoTextForward: () => void;
     typoTextBack: () => void;
     typoTextNextChar: String;
+    typoAppActions: TypoAppActions;
 }
 
 
-function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar}: TypingInputFieldProps) {
+function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar, typoAppActions}: TypingInputFieldProps) {
     const [inputState, setInputState] = useState<InputState>(InputState.default);
     const inputField = useRef<HTMLInputElement>(null);
 
@@ -60,13 +62,16 @@ function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar}: Typ
     function handleCommand(command: TypingInterfaceCommand) {
         switch (command) {
             case TypingInterfaceCommand.help:
+                typoAppActions.displayHelp()
                 break;
             case TypingInterfaceCommand.load:
+                typoAppActions.loadText()
                 break;
             case TypingInterfaceCommand.skip:
                 typoTextForward()
                 break;
             case TypingInterfaceCommand.paste:
+                typoAppActions.pasteText()
                 break;
         }
     }
