@@ -4,34 +4,27 @@ import TypingInterface from "./TypingInterface/TypingInterface";
 import PasteInterface from "./PasteField/PasteInterface";
 import useTypoText from "./useTypoText";
 import {introText} from "./resources/texts";
+import HelpText from "./HelpText/HelpText";
 
 enum UiInterfaces { typingInterface, pasteInterface,}
 
 export type TypoAppActions = {
     pasteText: () => void;
     loadText: () => void;
-    displayHelp: () => void;
+    toggleHelp: () => void;
 }
 
 function App() {
     const typoText = useTypoText(introText)
-    const [interfaceToDisplay, setInterfaceToDisplay] = useState<UiInterfaces>(UiInterfaces.typingInterface);
-    const fileInput = useRef<HTMLInputElement>(null);
+    const [interfaceToDisplay, setInterfaceToDisplay] = useState<UiInterfaces>(UiInterfaces.typingInterface)
+    const [displayHelp, setDisplayHelp] = useState(false)
+    const fileInput = useRef<HTMLInputElement>(null)
 
-    function pasteText() {
-        setInterfaceToDisplay(UiInterfaces.pasteInterface)
-
+    const typoAppActions: TypoAppActions = {
+        toggleHelp: () => setDisplayHelp(prev => !prev),
+        loadText: () => fileInput.current?.click(),
+        pasteText: () => setInterfaceToDisplay(UiInterfaces.pasteInterface)
     }
-
-    function loadTextFromFile() {
-        fileInput.current?.click()
-    }
-
-    function displayHelp() {
-
-    }
-
-    const typoAppActions: TypoAppActions = {displayHelp: displayHelp, loadText: loadTextFromFile, pasteText: pasteText}
 
     function onFileSelection(e: React.FormEvent<HTMLInputElement>) {
         const inputElement = (e.target as HTMLInputElement);
@@ -65,7 +58,7 @@ function App() {
             }
             </div>
             <div className={"ty-bottom"}>
-                <pre>Help:</pre>
+                <div className={"ty-bottom-right"}>{displayHelp && <HelpText/>}</div>
             </div>
             <input ref={fileInput} type={"file"} hidden onChange={onFileSelection}/>
         </div>

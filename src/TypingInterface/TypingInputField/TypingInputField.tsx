@@ -62,7 +62,7 @@ function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar, typo
     function handleCommand(command: TypingInterfaceCommand) {
         switch (command) {
             case TypingInterfaceCommand.help:
-                typoAppActions.displayHelp()
+                typoAppActions.toggleHelp()
                 break;
             case TypingInterfaceCommand.load:
                 typoAppActions.loadText()

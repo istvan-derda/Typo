@@ -34,3 +34,11 @@ export const introText = [
     "Well, that is some boring stuff right there, isn't it?",
     "I'll just redirect you to the main menu. Was nice to meet you!"
 ]
+
+export const helpText = "Help:\n" +
+    ":help - show / hide this dialogue\n" +
+    ":s - Skip a character\n" +
+    ":paste - paste some text you would like to type\n" +
+    ":load - open a text-file from your machine to practice with\n" +
+    ":theme-sepia - change to sepia-theme\n" +
+    ":theme-default - change to default-theme\n"
