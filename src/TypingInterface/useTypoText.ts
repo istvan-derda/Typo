@@ -25,7 +25,7 @@ function useTypoText(initialText: String[]): TypoText {
 
     function moveForward(prev: TypoTextState): TypoTextState {
         const newCharIndex = charIndex + 1
-        if (newCharIndex > lastCharIndex) {
+        if (newCharIndex > lastCharIndex + 1) {
             return moveToNextLine(prev)
         }
         return ({...prev, charIndex: newCharIndex})
@@ -52,7 +52,7 @@ function useTypoText(initialText: String[]): TypoText {
         if (newLineIndex < 0) {
             return prev
         }
-        const newCharIndex = lines[newLineIndex].length - 1
+        const newCharIndex = lines[newLineIndex].length
         return {...prev, lineIndex: newLineIndex, charIndex: newCharIndex,}
     }
 
