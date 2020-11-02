@@ -41,4 +41,5 @@ export const helpText =
     ":paste - paste some text you would like to type\n" +
     ":load - open a text-file from your machine to practice with\n" +
     ":theme-sepia - change to sepia-theme\n" +
-    ":theme-white - change to white-theme\n"
+    ":theme-white - change to white-theme\n" +
+    ":donate - buy me a coffee"

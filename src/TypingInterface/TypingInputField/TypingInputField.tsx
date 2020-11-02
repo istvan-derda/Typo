@@ -10,6 +10,7 @@ enum TypingInterfaceCommand {
     skip = "s",
     setThemeToSepia = "theme-sepia",
     setThemeToWhite = "theme-white",
+    donate = "donate",
 }
 
 enum InputState {default, typingError, commandline, validCommand}
@@ -82,6 +83,10 @@ function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar, typo
                 break;
             case TypingInterfaceCommand.setThemeToWhite:
                 typoAppActions.setThemeToDefault()
+                break;
+            case TypingInterfaceCommand.donate:
+                window.open(
+                    "https://paypal.me/istvanderda");
                 break;
             case TypingInterfaceCommand.paste:
                 typoAppActions.pasteText()
