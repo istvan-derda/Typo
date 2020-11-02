@@ -22,7 +22,7 @@ function App() {
     const typoText = useTypoText(introText)
     const [interfaceToDisplay, setInterfaceToDisplay] = useState<UiInterfaces>(UiInterfaces.typingInterface)
     const [displayHelp, setDisplayHelp] = useState(false)
-    const [theme, setTheme] = useState(TypoTheme.white)
+    const [theme, setTheme] = useState(TypoTheme.sepia)
     const fileInput = useRef<HTMLInputElement>(null)
 
     const typoAppActions: TypoAppActions = {
