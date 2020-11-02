@@ -1,3 +1,4 @@
+import "./TypingInputField.scss"
 import React, {useRef, useState} from "react";
 import useAlwaysFocusOn from "../../common/useAlwaysFocusOn";
 
@@ -71,7 +72,7 @@ function TypingInputField({typoTextForward, typoTextBack, typoTextNextChar}: Typ
     }
 
     return <input className={`ty-typing-input 
-            ${(inputState === InputState.typingError && "--typo")
+            ${(inputState === InputState.typingError && "--typing-error")
     || (inputState === InputState.commandline && "--command-line")
     || (inputState === InputState.validCommand && "--valid-command")}`}
                   ref={inputField}
