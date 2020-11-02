@@ -13,6 +13,7 @@ export type TypoText = {
     readonly nextChar: String
     readonly moveForward: () => void
     readonly moveBack: () => void
+    readonly setText: (lines: String[], charIndex: number, lineIndex: number) => void
 }
 
 
@@ -55,12 +56,21 @@ function useTypoText(initialText: String[]): TypoText {
         return {...prev, lineIndex: newLineIndex, charIndex: newCharIndex,}
     }
 
+    function setText(lines: String[], charIndex: number = 0, lineIndex: number = 0) {
+        setTypoText({
+            lines: lines,
+            lineIndex: lineIndex,
+            charIndex: charIndex,
+        })
+    }
+
     return ({
         moveForward: () => setTypoText(prev => moveForward(prev)),
         moveBack: () => setTypoText(prev => moveBack(prev)),
         typedText: lines[lineIndex].substr(0, charIndex),
         nextChar: lines[lineIndex][charIndex],
         textToType: lines[lineIndex].substr(charIndex + 1, lines[lineIndex].length - 1),
+        setText: setText,
     })
 }
 
