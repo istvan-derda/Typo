@@ -1,8 +1,7 @@
-import React, { useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import './App.scss';
 import TypingInterface from "./TypingInterface/TypingInterface";
 import PasteField from "./PasteField/PasteField";
-import {TypoTextState} from "./TypingInterface/useTypoText";
 
 enum ApplicationState {
     intro, inPractice, endOfPractice, endOfPracticeeMessage, paused, help, paste,
@@ -37,13 +36,16 @@ function App() {
 
 
     return (
-        <div className="ty-app">
+        <div className="ty-app --sepia">
             <h1 className={"ty-app-title"}>The beginning of Typo<sup><sup>(alpha)</sup></sup></h1>
             <div className={"ty-center"}>{
                 (applicationState === ApplicationState.paste
                     && <PasteField handlePlainTextInput={handlePastePlainText}/>)
-                || <TypingInterface />
+                || <TypingInterface/>
             }
+            </div>
+            <div className={"ty-bottom"}>
+                <pre>Help:</pre>
             </div>
             <input ref={fileInput} type={"file"} hidden onChange={onFileSelection}/>
         </div>
@@ -51,7 +53,3 @@ function App() {
 }
 
 export default App;
-
-const initializePractice = (lines: string[]): TypoTextState => {
-    return {lines: lines, lineIndex: 0, charIndex: 0}
-}

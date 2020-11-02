@@ -5,6 +5,16 @@
   grid-template-rows: 1fr auto 1.3fr;
   grid-template-columns: 1fr auto 1fr;
 
+  font-size: 1.2em;
+  font-family: monospace;
+  background-color: #f9f9f9;
+  color: #000000;
+
+  &.--sepia {
+    background-color: #fcf3e9;
+    color: #5a360c;
+  }
+
   .ty-app-title {
     grid-row: 1;
     grid-column: 2;
@@ -12,6 +22,11 @@
 
   .ty-center {
     grid-row: 2;
+    grid-column: 2;
+  }
+
+  .ty-bottom {
+    grid-row: 3;
     grid-column: 2;
   }
 }
